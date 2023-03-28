@@ -1,0 +1,11 @@
+div#container{
+    display: flex;
+}
+
+div.grid{
+    background: #006000;
+}
+
+div.grid.draw{
+    background: black;
+}
