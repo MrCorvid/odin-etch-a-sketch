@@ -1,40 +1,51 @@
+//button constants
 const bttnnew = document.querySelector("button.new");
 const bttnclear = document.querySelector("button.clear");
 const bttncolor = document.querySelector("button.color");
 
+//document constants
 const container = document.querySelector("div#container");
 const sheet = document.styleSheets[0];
 const rules = sheet.cssRules ?? sheet.rules;
 
+//configurable pixel size for canvas
 const MAX_SIZE = 960;
 
+//variable which holds all drawable grid divs
 let grid = document.querySelectorAll("div.grid");
 
-function remGrid() {
-    while (container.firstChild) {
-        container.removeChild(container.firstChild);
+//Get / Set size
+function getSize() {
+    let getNum = -1;
+
+    while (getNum < 1 || getNum > 100) {
+        getNum = parseInt(prompt("Enter a number between 1 and 100"));
+        if (!Number.isFinite(getNum)) {
+            getNum = -1;
+        }
     }
-    grid = document.querySelectorAll("div.grid");
+
+    return getNum;
 }
 
-function remSheets() {
-    for (var i=0; i<rules.length; i++) {
-        sheet.deleteRule (i);
-    }  
+function setSize(size) {
+    let square = MAX_SIZE / size;
+    rules[1].style.minHeight = `${square}px`;
+    rules[1].style.minWidth = `${square}px`;
 }
 
+//Check / Set color
 function isColor(strColor) {
     const s = new Option().style;
     s.color = strColor;
     return s.color !== '';
 }
 
-function setColors(newColors){
+function setColors(newColors) {
     let color1 = 'green';
     let color2 = 'black';
 
-
-    if(newColors){
+    if (newColors) {
         do {
             color1 = prompt("Pick a background color!");
             color2 = prompt("Pick a pen color!");
@@ -45,14 +56,15 @@ function setColors(newColors){
     rules[2].style.background = `${color2}`;
 }
 
-function setSize(size){
-
-    let square = MAX_SIZE/size;
+//clear all elements from the container div before creating new div grid
+function remGrid() {
+    while (container.firstChild) {
+        container.removeChild(container.firstChild);
+    }
     grid = document.querySelectorAll("div.grid");
-    rules[1].style.minHeight = `${square}px`;
-    rules[1].style.minWidth = `${square}px`;
 }
 
+//Create the grid and attach correct properties and event listeners
 function setGrid(size, newColors) {
 
     remGrid();
@@ -72,25 +84,27 @@ function setGrid(size, newColors) {
     }
 
     setSize(size);
-    
+
+    //Might be a better way to do this - maybe have a single click event for #container, then either check bubbling for div.grid above it, 
+    //or check mouse position within the #container against .grid
+    //This could allow for many many many more divs to be placed without lagging due to the event listeners
     for (const key in grid) {
         if (Object.hasOwnProperty.call(grid, key)) {
             const e = grid[key];
-            e.addEventListener("mouseover", (event)=>{startDraw(event);});
+            e.addEventListener("mouseover", (event) => { startDraw(event); });
         }
     }
+
+    grid = document.querySelectorAll("div.grid");
 }
 
-bttnclear.addEventListener("click", (event) => {endDraw(event);});
-bttnnew.addEventListener("click", (event) => {setGrid(getSize(), true);});
-bttncolor.addEventListener("click", (event) => {setColors(true);});
-
-
-function startDraw(event){
+//callback function to add draw class to div
+function startDraw(event) {
     event.target.classList.add("draw");
 }
 
-function endDraw(event){
+//on Clear, remove all draw classes from the grid
+function endDraw(event) {
     for (const key in grid) {
         if (Object.hasOwnProperty.call(grid, key)) {
             const e = grid[key];
@@ -99,18 +113,8 @@ function endDraw(event){
     }
 }
 
-function getSize(){
-    let getNum = -1;
-
-    while (getNum < 1 || getNum >= 100){
-        getNum = parseInt(prompt("Enter a number between 1 and 100"));
-        if (!Number.isFinite(getNum)) {
-            getNum = -1;
-        }
-    }
-
-    return getNum;
-}
+bttnclear.addEventListener("click", (event) => { endDraw(event); });
+bttnnew.addEventListener("click", (event) => { setGrid(getSize(), true); });
+bttncolor.addEventListener("click", (event) => { setColors(true); });
 
 setGrid(16, false);
-//what

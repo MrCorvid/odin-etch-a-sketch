@@ -1,13 +1,13 @@
-div#container{
+div#container {
     display: flex;
 }
 
-div.grid{
+div.grid {
     background: #006000;
     min-width: 60px;
     min-height: 60px;
 }
 
-div.grid.draw{
+div.grid.draw {
     background: black;
 }
