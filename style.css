@@ -4,6 +4,8 @@ div#container{
 
 div.grid{
     background: #006000;
+    min-width: 60px;
+    min-height: 60px;
 }
 
 div.grid.draw{
