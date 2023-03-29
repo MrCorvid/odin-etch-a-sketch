@@ -1,16 +1,64 @@
+const bttnnew = document.querySelector("button.new");
+const bttnclear = document.querySelector("button.clear");
+const bttncolor = document.querySelector("button.color");
+
 const container = document.querySelector("div#container");
 const sheet = document.styleSheets[0];
 const rules = sheet.cssRules ?? sheet.rules;
 
 const MAX_SIZE = 960;
-//    min-width: 50px;
-//    min-height: 50px;
 
 let grid = document.querySelectorAll("div.grid");
 
+function remGrid() {
+    while (container.firstChild) {
+        container.removeChild(container.firstChild);
+    }
+    grid = document.querySelectorAll("div.grid");
+}
 
-function setGrid(size) {
-    square = MAX_SIZE/size;
+function remSheets() {
+    for (var i=0; i<rules.length; i++) {
+        sheet.deleteRule (i);
+    }  
+}
+
+function isColor(strColor) {
+    const s = new Option().style;
+    s.color = strColor;
+    return s.color !== '';
+}
+
+function setColors(newColors){
+    let color1 = 'green';
+    let color2 = 'black';
+
+
+    if(newColors){
+        do {
+            color1 = prompt("Pick a background color!");
+            color2 = prompt("Pick a pen color!");
+        } while (!(isColor(color1) && isColor(color2)));
+    }
+
+    rules[1].style.background = `${color1}`;
+    rules[2].style.background = `${color2}`;
+}
+
+function setSize(size){
+
+    let square = MAX_SIZE/size;
+    grid = document.querySelectorAll("div.grid");
+    rules[1].style.minHeight = `${square}px`;
+    rules[1].style.minWidth = `${square}px`;
+}
+
+function setGrid(size, newColors) {
+
+    remGrid();
+
+    setColors(newColors);
+
     for (let i = 0; i < size; i++) {
         let e = document.createElement('div');
         e.classList.add("gridContainer");
@@ -22,17 +70,20 @@ function setGrid(size) {
             e.appendChild(n);
         }
     }
-    grid = document.querySelectorAll("div.grid");
-    sheet.insertRule(`div.grid{min-width: ${square}px; min-height: ${square}px; }`,0);
+
+    setSize(size);
     
     for (const key in grid) {
         if (Object.hasOwnProperty.call(grid, key)) {
             const e = grid[key];
             e.addEventListener("mouseover", (event)=>{startDraw(event);});
-            e.addEventListener("mouseout", (event)=>{endDraw(event);});
         }
     }
 }
+
+bttnclear.addEventListener("click", (event) => {endDraw(event);});
+bttnnew.addEventListener("click", (event) => {setGrid(getSize(), true);});
+bttncolor.addEventListener("click", (event) => {setColors(true);});
 
 
 function startDraw(event){
@@ -40,9 +91,25 @@ function startDraw(event){
 }
 
 function endDraw(event){
-    //event.target.classList.remove("draw");
+    for (const key in grid) {
+        if (Object.hasOwnProperty.call(grid, key)) {
+            const e = grid[key];
+            e.classList.remove("draw");
+        }
+    }
 }
 
+function getSize(){
+    let getNum = -1;
 
+    while (getNum < 1 || getNum >= 100){
+        getNum = parseInt(prompt("Enter a number between 1 and 100"));
+        if (!Number.isFinite(getNum)) {
+            getNum = -1;
+        }
+    }
 
-setGrid(16);
+    return getNum;
+}
+
+setGrid(16, false);
