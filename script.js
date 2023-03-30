@@ -25,7 +25,7 @@ function getSize() {
         }
     }
 
-    return getNum;
+    return getNum;z
 }
 
 function setSize(size) {
@@ -82,9 +82,8 @@ function setGrid(size, newColors) {
             e.appendChild(n);
         }
     }
-
     setSize(size);
-
+    grid = document.querySelectorAll("div.grid");
     //Might be a better way to do this - maybe have a single click event for #container, then either check bubbling for div.grid above it, 
     //or check mouse position within the #container against .grid
     //This could allow for many many many more divs to be placed without lagging due to the event listeners
@@ -95,7 +94,7 @@ function setGrid(size, newColors) {
         }
     }
 
-    grid = document.querySelectorAll("div.grid");
+    
 }
 
 //callback function to add draw class to div
